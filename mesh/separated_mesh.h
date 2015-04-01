@@ -10,6 +10,7 @@ class separated_mesh : public basic_mesh
 {
 	private: 
 		std::map<unsigned, GLuint> m_VBOs;
+		int m_ElementBufferId = -1;
 		
 	public: 
 		separated_mesh() = default;

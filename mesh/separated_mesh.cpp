@@ -46,6 +46,8 @@ separated_mesh::~separated_mesh()
 
 void separated_mesh::upload()
 {
+	m_ElementBufferId = -1;
+	
 	for(std::pair<const unsigned, stream_data>& p: m_Streams)
 	{
 		if(!m_VBOs.count(p.first))
@@ -57,6 +59,9 @@ void separated_mesh::upload()
 		
 		glBindBuffer(p.second.buffer_type, m_VBOs[p.first]);
 		glBufferData(p.second.buffer_type, p.second.data.size(), p.second.data.data(), this->storage_policy);
+		
+		if(p.second.buffer_type == GL_ELEMENT_ARRAY_BUFFER)
+			m_ElementBufferId = p.first;
 	}
 }
 
@@ -71,13 +76,18 @@ void separated_mesh::bind()
 	glBindVertexArray(m_VAO);
 	for(auto& p : m_Streams)
 	{
-		int attrib = glGetAttribLocation(active_shader, p.second.name.c_str());
-		if(attrib == -1)
-			continue;
-		
 		glBindBuffer(p.second.buffer_type, m_VBOs[p.first]);
-		glEnableVertexAttribArray(attrib);
-		glVertexAttribPointer(attrib, p.second.components, p.second.type, p.second.normalized, 0, 0);
+		
+		if(p.second.buffer_type == GL_ARRAY_BUFFER)
+		{
+			int attrib = glGetAttribLocation(active_shader, p.second.name.c_str());
+			
+			if(attrib == -1)
+				continue;
+			
+			glEnableVertexAttribArray(attrib);
+			glVertexAttribPointer(attrib, p.second.components, p.second.type, p.second.normalized, 0, 0);
+		}
 	}
 }
 
@@ -86,10 +96,22 @@ void separated_mesh::draw()
 	if(m_VBOs.empty())
 		return;
 	
-	unsigned vertex_count = 0;
-	const stream_data& sd = m_Streams.begin()->second;
-	vertex_count  = sd.data.size() / (sd.components * gl_type_size(sd.type));
-	
 	glBindVertexArray(m_VAO);
-	glDrawArrays(draw_mode, 0, vertex_count);
+	
+	if(m_ElementBufferId < 0)
+	{
+		unsigned vertex_count = 0;
+		const stream_data& sd = m_Streams.begin()->second;
+		vertex_count  = sd.data.size() / (sd.components * gl_type_size(sd.type));
+		
+		glDrawArrays(draw_mode, 0, vertex_count);
+	}
+	else
+	{
+		unsigned vertex_count = 0;
+		const stream_data& sd = m_Streams[m_ElementBufferId];
+		vertex_count = sd.data.size() / gl_type_size(sd.type);
+		
+		glDrawElements(draw_mode, vertex_count, sd.type, 0);
+	}
 }
