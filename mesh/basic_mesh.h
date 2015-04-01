@@ -4,7 +4,7 @@
 #include <GL/glew.h>
 #include <map>
 #include <string>
-#include "frame/buffer.hpp"
+#include "../buffer.hpp"
 
 class basic_mesh
 {
