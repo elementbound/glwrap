@@ -2,11 +2,11 @@
 
 namespace texutil
 {
-	texture2d load_png(const char* file) { return load_png(png::image<png::rgba_pixel>(file)); }
+	image load_png(const char* file) { return load_png(png::image<png::rgba_pixel>(file)); }
 	
-	texture2d load_png(const png::image<png::rgba_pixel>& png)
+	image load_png(const png::image<png::rgba_pixel>& png)
 	{
-		texture2d ret;
+		image ret;
 		if(png.get_width()==0 || png.get_height()==0)
 			return ret;
 		
@@ -21,8 +21,14 @@ namespace texutil
 				data[(y*png.get_width() + x)*4 + 3] = p.alpha;
 			}
 		
-		ret.upload(data, png.get_width(),png.get_height(), GL_RGBA,GL_RGBA, GL_UNSIGNED_BYTE);
-		delete [] data;
+		ret.data = (char*)data;
+		ret.size = png.get_width() * png.get_height() * 4;
+		
+		ret.width = png.get_width();
+		ret.height = png.get_height();
+		
+		ret.data_format = GL_RGBA;
+		ret.data_type = GL_UNSIGNED_BYTE;
 		
 		return ret;
 	}
