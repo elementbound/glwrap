@@ -2,7 +2,7 @@
 #define _H_MESHUTIL_H_
 
 #include <iostream>
-#include "glwrap/mesh.h"
+#include "mesh.h"
 
 namespace meshutil
 {
