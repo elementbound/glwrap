@@ -100,6 +100,16 @@ int  shader_program::uniform(const std::string& name) const
 	return glGetUniformLocation(this->handle(), name.c_str());
 }
 
+void shader_program::set_uniform(int loc, int value) const
+{
+	glUniform1i(loc, value);
+}
+
+void shader_program::set_uniform(int loc, float value) const
+{
+	glUniform1f(loc, value);
+}
+
 void shader_program::set_uniform(int loc, glm::vec2 value) const
 {
 	glUniform2f(loc, value.x, value.y);
@@ -126,6 +136,16 @@ void shader_program::set_uniform(int loc, glm::mat4 value) const
 		std::cerr << "Couldn't find uniform called " << name << std::endl; \
 	else \
 		this->set_uniform(loc, value); 
+
+void shader_program::set_uniform(const char* name, int value) const
+{
+	SET_UNIFORM_MACRO(name, value)
+}
+
+void shader_program::set_uniform(const char* name, float value) const
+{
+	SET_UNIFORM_MACRO(name, value)
+}
 
 void shader_program::set_uniform(const char* name, glm::vec2 value) const
 {
