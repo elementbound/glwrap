@@ -1,5 +1,5 @@
 #include "meshutil.h"
-#include "glwrap/util.h"
+#include "util.h"
 
 #include <sstream>
 #include <string>
