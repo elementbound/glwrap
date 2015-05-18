@@ -64,7 +64,7 @@ namespace meshutil
 		unsigned pos = result_mesh.add_stream();
 		unsigned nor = result_mesh.add_stream();
 		unsigned tex = result_mesh.add_stream();
-		unsigned ind = result_mesh.add_stream();
+		//unsigned ind = result_mesh.add_stream();
 		
 		result_mesh[pos].type = GL_FLOAT;
 		result_mesh[pos].buffer_type = GL_ARRAY_BUFFER;
@@ -84,11 +84,11 @@ namespace meshutil
 		result_mesh[tex].normalized = 0;
 		result_mesh[tex].name = "vertexTexcoord";
 		
-		result_mesh[ind].type = GL_UNSIGNED_INT;
+		/*result_mesh[ind].type = GL_UNSIGNED_INT;
 		result_mesh[ind].buffer_type = GL_ELEMENT_ARRAY_BUFFER;
 		result_mesh[ind].components = 1;
 		result_mesh[ind].normalized = 0;
-		result_mesh[ind].name = "";
+		result_mesh[ind].name = "";*/
 		
 		//
 		
@@ -145,12 +145,12 @@ namespace meshutil
 					}
 					
 					obj_vertices.push_back(f);
-					vertex_combinations.insert(f);
+					//vertex_combinations.insert(f);
 				}
 			}
 		}
 		
-		for(const auto& f: vertex_combinations)
+		/*for(const auto& f: vertex_combinations)
 		{
 			const index_t pos_index = f[0] - 1;
 			const index_t uv_index = f[1] - 1;
@@ -159,12 +159,20 @@ namespace meshutil
 			result_mesh[pos].data << obj_positions[pos_index];
 			result_mesh[tex].data << obj_texcoords[uv_index];
 			result_mesh[nor].data << obj_normals[normal_index];
-		}
+		}*/
 		
 		for(const auto& f: obj_vertices)
 		{
-			index_t index = std::distance(vertex_combinations.begin(), vertex_combinations.find(f));
-			result_mesh[ind].data << (unsigned int)index;
+			/*index_t index = std::distance(vertex_combinations.begin(), vertex_combinations.find(f));
+			result_mesh[ind].data << (unsigned int)index;*/
+			
+			const index_t pos_index = f[0] - 1;
+			const index_t uv_index = f[1] - 1;
+			const index_t normal_index = f[2] - 1;
+			
+			result_mesh[pos].data << obj_positions[pos_index];
+			result_mesh[tex].data << obj_texcoords[uv_index];
+			result_mesh[nor].data << obj_normals[normal_index];
 		}
 		
 		result_mesh.upload();

@@ -107,7 +107,7 @@ void shader_program::set_uniform(int loc, int value) const
 
 void shader_program::set_uniform(int loc, float value) const
 {
-	glUniform1f(loc, value.x, value.y);
+	glUniform1f(loc, value);
 }
 
 void shader_program::set_uniform(int loc, glm::vec2 value) const
